@@ -1,0 +1,20 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Anu@0502",
+    "database": "smart_health_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": 3306
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}

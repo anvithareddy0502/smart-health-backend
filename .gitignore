@@ -1,0 +1,6 @@
+node_modules/
+.env
+smart_health_db.env
+serviceAccountKey.json
+uploads/
+.DS_Store

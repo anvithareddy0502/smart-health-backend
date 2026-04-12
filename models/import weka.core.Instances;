@@ -1,0 +1,37 @@
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+import weka.classifiers.trees.J48;
+import weka.classifiers.Evaluation;
+
+import java.util.Random;
+
+public class IDS_Weka {
+
+    public static void main(String[] args) throws Exception {
+
+        // Load dataset
+        DataSource source = new DataSource("dataset.arff");
+        Instances data = source.getDataSet();
+
+        // Set class index (last column)
+        data.setClassIndex(data.numAttributes() - 1);
+
+        // Build model (Decision Tree)
+        J48 tree = new J48();
+        tree.buildClassifier(data);
+
+        // Evaluate model
+        Evaluation eval = new Evaluation(data);
+        eval.crossValidateModel(tree, data, 5, new Random(1));
+
+        // Output results
+        System.out.println("=== Intrusion Detection Results ===");
+        System.out.println(eval.toSummaryString());
+        System.out.println(eval.toClassDetailsString());
+        System.out.println(eval.toMatrixString());
+
+        // Print tree
+        System.out.println("\nGenerated Decision Tree:");
+        System.out.println(tree);
+    }
+}
