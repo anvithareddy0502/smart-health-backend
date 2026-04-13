@@ -15,7 +15,7 @@ const app = express();
 
 /* ================== CORS ================== */
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: ["http://localhost:3000","http://localhost:3001", "https://smart-healthcare-assista-754c4.web.app"],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
