@@ -74,5 +74,9 @@ router.delete('/:id', async (req, res) => {
   await Medicine.destroy({ where: { id: req.params.id } });
   res.json({ message: "Deleted" });
 });
+router.get("/test", (req, res) => {
+  res.json({ msg: "med route working" });
+});
+
 
 module.exports = router;
