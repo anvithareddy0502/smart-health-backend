@@ -17,7 +17,7 @@ router.post('/add', async (req, res) => {
       type,
       schedule,
       count: Number(count),
-      expiry: expiryDate,
+      expiryDate: expiryDate,
       UserId: user.id
     });
 

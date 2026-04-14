@@ -55,32 +55,37 @@ router.get('/:uid', async (req, res) => {
 
 
 // ================= UPDATE STATUS =================
+
+// ================= UPDATE STATUS =================
 router.put('/status/:id', async (req, res) => {
   try {
     const { status } = req.body;
 
     const appt = await Appointment.findByPk(req.params.id);
-    if (!appt) return res.status(404).json({ error: "Not found" });
+
+    if (!appt) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
 
     appt.status = status;
     await appt.save();
 
-    // 🔔 SEND NOTIFICATION
     const user = await User.findByPk(appt.UserId);
 
+    // 🔔 SEND NOTIFICATION
     await sendNotification(
       user.fcm_tokens,
-      "📅 Appointment Updated",
-      `Status changed to ${status}`
+      "📅 Appointment Update",
+      `Appointment marked as ${status}`
     );
 
     res.json(appt);
 
   } catch (err) {
+    console.log("STATUS ERROR:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // ================= DELETE =================
 router.delete('/:id', async (req, res) => {

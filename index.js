@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const fs = require('fs');
@@ -12,10 +11,13 @@ const healthResultsRouter = require('./routes/healthResults');
 
 const app = express();
 
-
 /* ================== CORS ================== */
 app.use(cors({
-  origin: ["http://localhost:3000","http://localhost:3001", "https://smart-healthcare-assista-754c4.web.app"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://smart-healthcare-assista-754c4.web.app"
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -32,18 +34,14 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/chat', require('./routes/chat'));
 
 /* ================== FILE UPLOAD ================== */
-
-// create uploads folder
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
 const upload = multer({ dest: 'uploads/' });
 
-// static access
 app.use('/uploads', express.static('uploads'));
 
-// upload
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     const { userId } = req.body;
@@ -63,7 +61,6 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// get files
 app.get('/api/files/:userId', async (req, res) => {
   const files = await Report.findAll({
     where: { userId: req.params.userId }
@@ -71,7 +68,6 @@ app.get('/api/files/:userId', async (req, res) => {
   res.json(files);
 });
 
-// download
 app.get('/api/download/:filename', (req, res) => {
   res.download(`uploads/${req.params.filename}`);
 });
@@ -91,7 +87,8 @@ sequelize.sync({ alter: true })
   .catch(err => console.log(err));
 
 /* ================== START SERVER ================== */
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
