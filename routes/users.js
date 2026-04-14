@@ -134,49 +134,21 @@ router.put('/profile', authMiddleware, async (req, res) => {
 });
 
 // ================= SAVE FCM TOKEN =================
-router.post('/update-fcm',  async (req, res) => {
-  const { uid, token } = req.body;
-
-  if (!uid || !token) {
-    return res.status(400).json({ error: 'Missing uid or token' });
-  }
-
+router.post("/update-fcm", async (req, res) => {
   try {
+    const { uid, token } = req.body;
+
     const user = await User.findOne({ where: { uid } });
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ msg: "User not found" });
 
-    let currentTokens = user.fcm_tokens || [];
+    user.fcmToken = token;
+    await user.save();
 
-    if (!currentTokens.includes(token)) {
-      currentTokens = [...currentTokens, token];
-    } else {
-      return res.json({ message: 'Token already exists', tokens: currentTokens });
-    }
-
-    // Raw SQL update
-    await sequelize.query(
-      'UPDATE users SET fcm_tokens = ?, updated_at = NOW() WHERE uid = ?',
-      {
-        replacements: [JSON.stringify(currentTokens), uid],
-        type: sequelize.QueryTypes.UPDATE
-      }
-    );
-
-    const [updatedRow] = await sequelize.query(
-      'SELECT fcm_tokens FROM users WHERE uid = ?',
-      { replacements: [uid], type: sequelize.QueryTypes.SELECT }
-    );
-
-    res.json({
-      message: 'Token updated successfully',
-      tokens: updatedRow?.fcm_tokens || []
-    });
+    res.json({ msg: "Token saved" });
 
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update token' });
+    res.status(500).json({ msg: "Error saving token" });
   }
 });
 
